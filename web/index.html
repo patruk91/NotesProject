@@ -11,17 +11,21 @@
     <script type="text/javascript" src="scripts/main.js" defer></script>
 </head>
 <body>
-    <h1>Not-pad</h1>
-    <div class="notepad">
-        <img src="images/notepad.png" alt="Notepad icon">
-        <p><- double click here to create a new note</p>
-    </div>
+    <div class="container">
+        <h1>Not-pad</h1>
+        <div class="notepad">
+            <img src="images/notepad.png" alt="Notepad icon">
+            <p><- double click here to create a new note</p>
+        </div>
 
-    <div class="form-data">
-        <label for="message">Edit me!</label>
-        <textarea name="message" id="message" placeholder="Edit me!"></textarea>
+        <div class="form-data" draggable="true">
+            <div class="panel-heading" >
+                <h3 class="panel-title" contenteditable="true">Edit me!</h3>
+                <button class="close">x</button>
+            </div>
+            <textarea name="message" id="message" placeholder="Edit me!"></textarea>
+        </div>
     </div>
-
 
 </body>
 </html>
