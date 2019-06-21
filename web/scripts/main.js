@@ -3,6 +3,8 @@ function createNewNote() {
         const newNote = document.createElement("div");
         newNote.className = "form-data";
         newNote.setAttribute("draggable", "true");
+        newNote.setAttribute("id", "form");
+        newNote.setAttribute("style", "left: 20px; top: 160px");
         return newNote;
     }
 
@@ -97,16 +99,19 @@ function handleDragNote() {
     let xClickPositionAtNote;
     let yClickPositionAtNote;
     handleDragListeners();
-
-
-
 }
 
 function main() {
     addNewNote();
     handleDragNote();
 
+    let noteToRemove = document.querySelector("#form");
 
+    function removeNote() {
+        noteToRemove.remove();
+    }
+
+    noteToRemove.addEventListener("click", removeNote);
 }
 
 main();
