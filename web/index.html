@@ -8,6 +8,7 @@
     <meta name="author" content="Patryk Lichwala">
     <title>My Notes Project</title>
     <link rel="stylesheet" href="css/style.css" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js' defer></script>
     <script type="text/javascript" src="scripts/main.js" defer></script>
 </head>
 <body>
@@ -18,7 +19,7 @@
             <p><- double click here to create a new note</p>
         </div>
 
-        <div class="form-data" draggable="true">
+        <div class="form-data" draggable="true" id="form" style="left: 20px; top:160px;">
             <div class="panel-heading" >
                 <h3 class="panel-title" id="title" contenteditable="true">Edit me!</h3>
                 <button class="button-close">x</button>

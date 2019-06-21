@@ -48,12 +48,36 @@ function createNewNote() {
     note.appendChild(textArea);
     let container = document.querySelector(".container");
     container.appendChild(note);
+}
+
+function addNewNote() {
+    let notepadIcon = document.querySelector("#notepad-icon");
+    notepadIcon.addEventListener("dblclick", createNewNote);
+}
+
+function handleDragNote() {
+    function handleDragListeners() {
+        let container = document.querySelector(".container");
+        const forms = document.querySelector(".form-data");
+        forms.addEventListener("dragstart", dragStart);
+        forms.addEventListener("dragend", dragEnd);
+        container.addEventListener("dragover", dragOver);
+        container.addEventListener("drop", dragDrop);
+
+
+    }
+    
+    handleDragListeners();
+
+
 
 }
 
 function main() {
-    let notepadIcon = document.querySelector("#notepad-icon");
-    notepadIcon.addEventListener("click", createNewNote);
+    addNewNote();
+    handleDragNote();
+
+
 }
 
 main();
