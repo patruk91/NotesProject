@@ -64,9 +64,38 @@ function handleDragNote() {
         container.addEventListener("dragover", dragOver);
         container.addEventListener("drop", dragDrop);
 
+        function dragStart(event) {
+            setTimeout(() => this.className = "invisible", 0);
+            xClickPositionAtNote = event.clientX;
+            yClickPositionAtNote = event.clientY;
+        }
 
+        function dragEnd() {
+            this.className = "form-data";
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+        }
+
+        function dragDrop(event) {
+            let bounds = event.target.getBoundingClientRect();
+            let xDragTarget = event.clientX - bounds.left;
+            let yDragTarget = event.clientY - bounds.top;
+
+            let formData = this.querySelector("#form");
+            let actualMarginAtLeft = +formData.style.left.replace("px", "");
+            let actualMarginAtTop = +formData.style.top.replace("px", "");
+
+            let widthOfStrapNote = 15;
+            formData.style.position = "absolute";
+            formData.style.left = `${xDragTarget - xClickPositionAtNote + actualMarginAtLeft}px`;
+            formData.style.top = `${yDragTarget - yClickPositionAtNote + actualMarginAtTop + widthOfStrapNote}px`;
+        }
     }
-    
+
+    let xClickPositionAtNote;
+    let yClickPositionAtNote;
     handleDragListeners();
 
 
