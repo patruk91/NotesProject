@@ -41,7 +41,13 @@ function createNewNote() {
         return newTextArea;
     }
 
-
+    let note = newNote();
+    let panelHeading = newPanelHeading();
+    let textArea = newTextArea();
+    note.appendChild(panelHeading);
+    note.appendChild(textArea);
+    let container = document.querySelector(".container");
+    container.appendChild(note);
 
 }
 
