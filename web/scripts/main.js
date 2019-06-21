@@ -1,9 +1,10 @@
-function createNewNote() {
+function createNewNote(event) {
+    let counter = event.target.counterData.getCounter();
     function newNote() {
         const newNote = document.createElement("div");
         newNote.className = "form-data";
         newNote.setAttribute("draggable", "true");
-        newNote.setAttribute("id", "form");
+        newNote.setAttribute("id", `form_${counter}`);
         newNote.setAttribute("style", "left: 20px; top: 160px");
         return newNote;
     }
@@ -50,21 +51,37 @@ function createNewNote() {
     note.appendChild(textArea);
     let container = document.querySelector(".container");
     container.appendChild(note);
+
+
+
+    //REMOVE
+    let notesToRemove = document.querySelectorAll(".form-data button");
+    for (let note of notesToRemove) {
+        note.addEventListener("click", removeNote);
+
+    }
+    function removeNote() {
+        document.querySelector(`#form_${counter}`).remove();
+    }
+
+    //DRAG
+    handleDragNote(counter);
 }
 
-function addNewNote() {
-    let notepadIcon = document.querySelector("#notepad-icon");
-    notepadIcon.addEventListener("dblclick", createNewNote);
-}
 
-function handleDragNote() {
+
+
+function handleDragNote(counter) {
+    console.log(counter);
     function handleDragListeners() {
         let container = document.querySelector(".container");
-        const forms = document.querySelector(".form-data");
-        forms.addEventListener("dragstart", dragStart);
-        forms.addEventListener("dragend", dragEnd);
-        container.addEventListener("dragover", dragOver);
-        container.addEventListener("drop", dragDrop);
+        const forms = document.querySelectorAll(".form-data");
+        for (let form of forms) {
+            form.addEventListener("dragstart", dragStart);
+            form.addEventListener("dragend", dragEnd);
+            container.addEventListener("dragover", dragOver);
+            container.addEventListener("drop", dragDrop);
+        }
 
         function dragStart(event) {
             setTimeout(() => this.className = "invisible", 0);
@@ -85,7 +102,8 @@ function handleDragNote() {
             let xDragTarget = event.clientX - bounds.left;
             let yDragTarget = event.clientY - bounds.top;
 
-            let formData = this.querySelector("#form");
+            console.log(event.parentElement);
+            let formData = this.querySelector(`#form_${counter}`);
             let actualMarginAtLeft = +formData.style.left.replace("px", "");
             let actualMarginAtTop = +formData.style.top.replace("px", "");
 
@@ -101,17 +119,29 @@ function handleDragNote() {
     handleDragListeners();
 }
 
+function countValue() {
+    return {
+        counter: 0,
+        increment: function () {
+            this.counter++;
+        },
+        getCounter: function () {
+            return this.counter;
+        }
+    };
+}
+
 function main() {
-    addNewNote();
-    handleDragNote();
+    let notepadIcon = document.querySelector(".notepad-icon");
+    const counterValue = countValue();
+    notepadIcon.counterData = counterValue;
+    notepadIcon.addEventListener("dblclick", () => counterValue.increment(), false);
+    notepadIcon.addEventListener("dblclick", createNewNote);
 
-    let noteToRemove = document.querySelector("#form");
 
-    function removeNote() {
-        noteToRemove.remove();
-    }
 
-    noteToRemove.addEventListener("click", removeNote);
+
+
 }
 
 main();
