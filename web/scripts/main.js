@@ -32,7 +32,18 @@ function createNewNote() {
         return newPanelHeading;
     }
 
+    function newTextArea() {
+        const newTextArea = document.createElement("textarea");
+        newTextArea.className = "message";
+        newTextArea.id = "msg";
+        newTextArea.setAttribute("name", "message");
+        newTextArea.setAttribute("placeholder", "Edit me!");
+        return newTextArea;
+    }
 
+
+
+}
 
 function main() {
     let notepadIcon = document.querySelector("#notepad-icon");
