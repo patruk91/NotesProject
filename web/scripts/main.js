@@ -1,128 +1,107 @@
-function createNewNote(event) {
-    let counter = event.target.counterData.getCounter();
-    function newFormSheet() {
-        const noteSheet = document.createElement("div");
-        noteSheet.className = "form-data";
-        noteSheet.setAttribute("draggable", "true");
-        noteSheet.setAttribute("id", `form_${counter}`);
-        noteSheet.setAttribute("style", "left: 20px; top: 160px");
-        return noteSheet;
-    }
-
-    function newTabBar() {
-        function newTitle() {
-            const newTitle = document.createElement("h3");
-            newTitle.className = "panel-title";
-            newTitle.id = "title";
-            newTitle.setAttribute("contenteditable", "true");
-            newTitle.innerText = "Edit me!";
-            return newTitle;
-        }
-
-        function newButton() {
-            const newButton = document.createElement("button");
-            newButton.className = "button-close";
-            newButton.innerText = "x";
-            return newButton;
-        }
-
-        let title = newTitle();
-        let button = newButton();
-
-        const tabBar = document.createElement("div");
-        tabBar.className = "panel-heading";
-        tabBar.appendChild(title);
-        tabBar.appendChild(button);
-        return tabBar;
-    }
-
-    function newTextArea() {
-        const newTextArea = document.createElement("textarea");
-        newTextArea.className = "message";
-        newTextArea.id = "msg";
-        newTextArea.setAttribute("name", "message");
-        newTextArea.setAttribute("placeholder", "Edit me!");
-        return newTextArea;
-    }
-
-    let note = newFormSheet();
-    let tabBar = newTabBar();
-    let textArea = newTextArea();
-    note.appendChild(tabBar);
-    note.appendChild(textArea);
-
-    let container = document.querySelector(".container");
-    container.appendChild(note);
-
-}
-
-function removeThatNote(event) {
-    //REMOVE
-    let counter = event.target.counterData.getCounter();
-    let noteToRemove = document.querySelector(`#form_${counter} button`);
-    noteToRemove.addEventListener("click", removeNote);
-
-    function removeNote() {
-        document.querySelector(`#form_${counter}`).remove();
-    }
-}
-
-function dragElements() {
-    const forms = document.querySelectorAll(".form-data");
-    for (let form of forms) {
-        form.addEventListener("dragstart", dragStart);
-        form.addEventListener("dragend", dragEnd);
-    }
-
-    function dragStart(event) {
-        setTimeout(() => this.className = "invisible", 0);
-    }
-
-    function dragEnd() {
-        this.className = "form-data";
-    }
-}
-
-function countValue() {
-    return {
-        counter: 0,
-        zIndex:0,
-        increment: function () {
-            this.counter++;
-        },
-        incrementIndex: function () {
-            this.zIndex++;
-        },
-        getCounter: function () {
-            return this.counter;
-        },
-        getIncrement: function () {
-            return this.zIndex;
-        }
-    };
-}
-
-function main() {
+function editNotes(counterValue) {
     let notepadIcon = document.querySelector(".notepad-icon");
-    const counterValue = countValue();
     notepadIcon.counterData = counterValue;
     notepadIcon.addEventListener("dblclick", () => counterValue.increment(), false);
     notepadIcon.addEventListener("dblclick", createNewNote);
-    notepadIcon.addEventListener("dblclick", removeThatNote);
-    notepadIcon.addEventListener("dblclick", dragElements);
+    notepadIcon.addEventListener("dblclick", addListenerToRemove);
+    notepadIcon.addEventListener("dblclick", addListenerToDragElements);
 
+    function createNewNote(event) {
+        let counter = event.target.counterData.getCounter();
+        function newFormSheet() {
+            const noteSheet = document.createElement("div");
+            noteSheet.className = "form-data";
+            noteSheet.setAttribute("draggable", "true");
+            noteSheet.setAttribute("id", `form_${counter}`);
+            noteSheet.setAttribute("style", "left: 20px; top: 160px");
+            return noteSheet;
+        }
 
+        function newTabBar() {
+            function newTitle() {
+                const newTitle = document.createElement("h3");
+                newTitle.className = "panel-title";
+                newTitle.id = "title";
+                newTitle.setAttribute("contenteditable", "true");
+                newTitle.innerText = "Edit me!";
+                return newTitle;
+            }
 
-    //DRAG CONTAINER
+            function newButton() {
+                const newButton = document.createElement("button");
+                newButton.className = "button-close";
+                newButton.innerText = "x";
+                return newButton;
+            }
+
+            let title = newTitle();
+            let button = newButton();
+
+            const tabBar = document.createElement("div");
+            tabBar.className = "panel-heading";
+            tabBar.appendChild(title);
+            tabBar.appendChild(button);
+            return tabBar;
+        }
+
+        function newTextArea() {
+            const newTextArea = document.createElement("textarea");
+            newTextArea.className = "message";
+            newTextArea.id = "msg";
+            newTextArea.setAttribute("name", "message");
+            newTextArea.setAttribute("placeholder", "Edit me!");
+            return newTextArea;
+        }
+
+        let note = newFormSheet();
+        let tabBar = newTabBar();
+        let textArea = newTextArea();
+        note.appendChild(tabBar);
+        note.appendChild(textArea);
+
+        let container = document.querySelector(".container");
+        container.appendChild(note);
+
+    }
+
+    function addListenerToRemove(event) {
+        let counter = event.target.counterData.getCounter();
+        let noteToRemove = document.querySelector(`#form_${counter} button`);
+        noteToRemove.addEventListener("click", removeNote);
+
+        function removeNote() {
+            document.querySelector(`#form_${counter}`).remove();
+        }
+    }
+
+    function addListenerToDragElements() {
+        const forms = document.querySelectorAll(".form-data");
+        for (let form of forms) {
+            form.addEventListener("dragstart", dragStart);
+            form.addEventListener("dragend", dragEnd);
+        }
+
+        function dragStart(event) {
+            setTimeout(() => this.className = "invisible", 0);
+        }
+
+        function dragEnd() {
+            this.className = "form-data";
+        }
+    }
+}
+
+function handleDragAndDropAtContainer(counterValue) {
     let container = document.querySelector(".container");
-    container.addEventListener("dragstart", dragStart1);
+    container.addEventListener("dragstart", dragStart);
     container.addEventListener("dragover", dragOver);
     container.addEventListener("drop", dragDrop);
 
     let xClickPositionAtNote;
     let yClickPositionAtNote;
     let currentPosition;
-    function dragStart1(event) {
+
+    function dragStart(event) {
         console.log(event.target.id.replace("form_", ""));
         currentPosition = +event.target.id.replace("form_", "");
         xClickPositionAtNote = event.clientX;
@@ -149,8 +128,31 @@ function main() {
         formData.style.zIndex = counterValue.getIncrement();
         counterValue.incrementIndex();
     }
+}
 
+function countValue() {
+    return {
+        counter: 0,
+        zIndex:0,
+        increment: function () {
+            this.counter++;
+        },
+        incrementIndex: function () {
+            this.zIndex++;
+        },
+        getCounter: function () {
+            return this.counter;
+        },
+        getIncrement: function () {
+            return this.zIndex;
+        }
+    };
+}
 
+function main() {
+    const counterValue = countValue();
+    editNotes(counterValue);
+    handleDragAndDropAtContainer(counterValue);
 }
 
 main();
