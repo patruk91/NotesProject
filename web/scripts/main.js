@@ -65,57 +65,34 @@ function createNewNote(event) {
     }
 
     //DRAG
-    handleDragNote(counter);
+    handleDragNote();
 }
 
 
 
 
-function handleDragNote(counter) {
-    console.log(counter);
+function handleDragNote() {
     function handleDragListeners() {
-        let container = document.querySelector(".container");
         const forms = document.querySelectorAll(".form-data");
         for (let form of forms) {
             form.addEventListener("dragstart", dragStart);
             form.addEventListener("dragend", dragEnd);
-            container.addEventListener("dragover", dragOver);
-            container.addEventListener("drop", dragDrop);
+
         }
 
         function dragStart(event) {
             setTimeout(() => this.className = "invisible", 0);
-            xClickPositionAtNote = event.clientX;
-            yClickPositionAtNote = event.clientY;
+
         }
 
         function dragEnd() {
             this.className = "form-data";
         }
 
-        function dragOver(event) {
-            event.preventDefault();
-        }
 
-        function dragDrop(event) {
-            let bounds = event.target.getBoundingClientRect();
-            let xDragTarget = event.clientX - bounds.left;
-            let yDragTarget = event.clientY - bounds.top;
-
-            console.log(event.parentElement);
-            let formData = this.querySelector(`#form_${counter}`);
-            let actualMarginAtLeft = +formData.style.left.replace("px", "");
-            let actualMarginAtTop = +formData.style.top.replace("px", "");
-
-            let widthOfStrapNote = 15;
-            formData.style.position = "absolute";
-            formData.style.left = `${xDragTarget - xClickPositionAtNote + actualMarginAtLeft}px`;
-            formData.style.top = `${yDragTarget - yClickPositionAtNote + actualMarginAtTop + widthOfStrapNote}px`;
-        }
     }
 
-    let xClickPositionAtNote;
-    let yClickPositionAtNote;
+
     handleDragListeners();
 }
 
@@ -140,6 +117,44 @@ function main() {
 
 
 
+    //DRAG CONTAINER
+    let container = document.querySelector(".container");
+    container.addEventListener("dragstart", dragStart1);
+    container.addEventListener("dragover", dragOver);
+    container.addEventListener("drop", dragDrop);
+
+    let xClickPositionAtNote;
+    let yClickPositionAtNote;
+    let currentPosition;
+    function dragStart1(event) {
+        console.log(event.target.id.replace("form_", ""));
+        currentPosition = +event.target.id.replace("form_", "");
+        const forms = document.querySelectorAll(".form-data");
+        xClickPositionAtNote = event.clientX;
+        yClickPositionAtNote = event.clientY;
+    }
+
+    function dragOver(event) {
+        event.preventDefault();
+    }
+
+    function dragDrop(event) {
+        const forms = document.querySelectorAll(".form-data");
+
+        // console.log(forms);
+        let bounds = event.target.getBoundingClientRect();
+        let xDragTarget = event.clientX - bounds.left;
+        let yDragTarget = event.clientY - bounds.top;
+
+        let formData = this.querySelector(`#form_${currentPosition}`);
+        let actualMarginAtLeft = +formData.style.left.replace("px", "");
+        let actualMarginAtTop = +formData.style.top.replace("px", "");
+
+        let widthOfStrapNote = 15;
+        formData.style.position = "absolute";
+        formData.style.left = `${xDragTarget - xClickPositionAtNote + actualMarginAtLeft}px`;
+        formData.style.top = `${yDragTarget - yClickPositionAtNote + actualMarginAtTop + widthOfStrapNote}px`;
+    }
 
 
 }
