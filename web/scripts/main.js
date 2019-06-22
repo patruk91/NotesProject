@@ -1,15 +1,15 @@
 function createNewNote(event) {
     let counter = event.target.counterData.getCounter();
-    function newNote() {
-        const newNote = document.createElement("div");
-        newNote.className = "form-data";
-        newNote.setAttribute("draggable", "true");
-        newNote.setAttribute("id", `form_${counter}`);
-        newNote.setAttribute("style", "left: 20px; top: 160px");
-        return newNote;
+    function newFormSheet() {
+        const noteSheet = document.createElement("div");
+        noteSheet.className = "form-data";
+        noteSheet.setAttribute("draggable", "true");
+        noteSheet.setAttribute("id", `form_${counter}`);
+        noteSheet.setAttribute("style", "left: 20px; top: 160px");
+        return noteSheet;
     }
 
-    function newPanelHeading() {
+    function newTabBar() {
         function newTitle() {
             const newTitle = document.createElement("h3");
             newTitle.className = "panel-title";
@@ -26,13 +26,14 @@ function createNewNote(event) {
             return newButton;
         }
 
-        const newPanelHeading = document.createElement("div");
-        newPanelHeading.className = "panel-heading";
         let title = newTitle();
-        newPanelHeading.appendChild(title);
         let button = newButton();
-        newPanelHeading.appendChild(button);
-        return newPanelHeading;
+
+        const tabBar = document.createElement("div");
+        tabBar.className = "panel-heading";
+        tabBar.appendChild(title);
+        tabBar.appendChild(button);
+        return tabBar;
     }
 
     function newTextArea() {
@@ -44,54 +45,42 @@ function createNewNote(event) {
         return newTextArea;
     }
 
-    let note = newNote();
-    let panelHeading = newPanelHeading();
+    let note = newFormSheet();
+    let tabBar = newTabBar();
     let textArea = newTextArea();
-    note.appendChild(panelHeading);
+    note.appendChild(tabBar);
     note.appendChild(textArea);
+
     let container = document.querySelector(".container");
     container.appendChild(note);
 
+}
 
-
+function removeThatNote(event) {
     //REMOVE
+    let counter = event.target.counterData.getCounter();
     let noteToRemove = document.querySelector(`#form_${counter} button`);
     noteToRemove.addEventListener("click", removeNote);
 
     function removeNote() {
         document.querySelector(`#form_${counter}`).remove();
     }
-
-    //DRAG
-    handleDragNote();
 }
 
-
-
-
-function handleDragNote() {
-    function handleDragListeners() {
-        const forms = document.querySelectorAll(".form-data");
-        for (let form of forms) {
-            form.addEventListener("dragstart", dragStart);
-            form.addEventListener("dragend", dragEnd);
-
-        }
-
-        function dragStart(event) {
-            setTimeout(() => this.className = "invisible", 0);
-
-        }
-
-        function dragEnd() {
-            this.className = "form-data";
-        }
-
-
+function dragElements() {
+    const forms = document.querySelectorAll(".form-data");
+    for (let form of forms) {
+        form.addEventListener("dragstart", dragStart);
+        form.addEventListener("dragend", dragEnd);
     }
 
+    function dragStart(event) {
+        setTimeout(() => this.className = "invisible", 0);
+    }
 
-    handleDragListeners();
+    function dragEnd() {
+        this.className = "form-data";
+    }
 }
 
 function countValue() {
@@ -119,6 +108,8 @@ function main() {
     notepadIcon.counterData = counterValue;
     notepadIcon.addEventListener("dblclick", () => counterValue.increment(), false);
     notepadIcon.addEventListener("dblclick", createNewNote);
+    notepadIcon.addEventListener("dblclick", removeThatNote);
+    notepadIcon.addEventListener("dblclick", dragElements);
 
 
 
@@ -134,7 +125,6 @@ function main() {
     function dragStart1(event) {
         console.log(event.target.id.replace("form_", ""));
         currentPosition = +event.target.id.replace("form_", "");
-        const forms = document.querySelectorAll(".form-data");
         xClickPositionAtNote = event.clientX;
         yClickPositionAtNote = event.clientY;
     }
@@ -144,9 +134,6 @@ function main() {
     }
 
     function dragDrop(event) {
-        const forms = document.querySelectorAll(".form-data");
-
-        // console.log(forms);
         let bounds = event.target.getBoundingClientRect();
         let xDragTarget = event.clientX - bounds.left;
         let yDragTarget = event.clientY - bounds.top;
