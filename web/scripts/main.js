@@ -55,11 +55,9 @@ function createNewNote(event) {
 
 
     //REMOVE
-    let notesToRemove = document.querySelectorAll(".form-data button");
-    for (let note of notesToRemove) {
-        note.addEventListener("click", removeNote);
+    let noteToRemove = document.querySelector(`#form_${counter} button`);
+    noteToRemove.addEventListener("click", removeNote);
 
-    }
     function removeNote() {
         document.querySelector(`#form_${counter}`).remove();
     }
@@ -99,11 +97,18 @@ function handleDragNote() {
 function countValue() {
     return {
         counter: 0,
+        zIndex:0,
         increment: function () {
             this.counter++;
         },
+        incrementIndex: function () {
+            this.zIndex++;
+        },
         getCounter: function () {
             return this.counter;
+        },
+        getIncrement: function () {
+            return this.zIndex;
         }
     };
 }
@@ -154,6 +159,8 @@ function main() {
         formData.style.position = "absolute";
         formData.style.left = `${xDragTarget - xClickPositionAtNote + actualMarginAtLeft}px`;
         formData.style.top = `${yDragTarget - yClickPositionAtNote + actualMarginAtTop + widthOfStrapNote}px`;
+        formData.style.zIndex = counterValue.getIncrement();
+        counterValue.incrementIndex();
     }
 
 
