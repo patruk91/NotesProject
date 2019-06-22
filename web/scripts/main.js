@@ -5,6 +5,8 @@ function editNotes(counterValue) {
     notepadIcon.addEventListener("dblclick", createNewNote);
     notepadIcon.addEventListener("dblclick", addListenerToRemove);
     notepadIcon.addEventListener("dblclick", addListenerToDragElements);
+    notepadIcon.addEventListener("dblclick", addListenerToSaveDataInLocalStorage);
+
 
     function createNewNote(event) {
         let counter = event.target.counterData.getCounter();
@@ -21,7 +23,7 @@ function editNotes(counterValue) {
             function newTitle() {
                 const newTitle = document.createElement("h3");
                 newTitle.className = "panel-title";
-                newTitle.id = "title";
+                newTitle.id = `title_${counter}`;
                 newTitle.setAttribute("contenteditable", "true");
                 newTitle.innerText = "Edit me!";
                 return newTitle;
@@ -47,7 +49,7 @@ function editNotes(counterValue) {
         function newTextArea() {
             const newTextArea = document.createElement("textarea");
             newTextArea.className = "message";
-            newTextArea.id = "msg";
+            newTextArea.id = `msg_${counter}`;
             newTextArea.setAttribute("name", "message");
             newTextArea.setAttribute("placeholder", "Edit me!");
             return newTextArea;
@@ -89,6 +91,23 @@ function editNotes(counterValue) {
             this.className = "form-data";
         }
     }
+
+    function addListenerToSaveDataInLocalStorage(event) {
+        function saveToLocal() {
+            let forms = document.querySelectorAll(".form-data");
+            for (let form of forms) {
+                localStorage.setItem(`form_${event.target.counterData.getCounter()}`, form.outerHTML);
+                localStorage.setItem("counterLocal",event.target.counterData.getCounter());
+            }
+
+        }
+        let formToSave = document.querySelector(`#form_${event.target.counterData.getCounter()}`);
+        console.log(formToSave);
+        formToSave.addEventListener("input", saveToLocal);
+        formToSave.addEventListener("dragend", saveToLocal);
+
+    }
+
 }
 
 function handleDragAndDropAtContainer(counterValue) {
@@ -132,7 +151,7 @@ function handleDragAndDropAtContainer(counterValue) {
 
 function countValue() {
     return {
-        counter: 0,
+        counter: localStorage.getItem("counterLocal") ? localStorage.getItem("counterLocal") : 0,
         zIndex:0,
         increment: function () {
             this.counter++;
@@ -149,10 +168,54 @@ function countValue() {
     };
 }
 
+
+
 function main() {
     const counterValue = countValue();
     editNotes(counterValue);
     handleDragAndDropAtContainer(counterValue);
+
+
+
+
+
+
+
+
+
+    let formToSave = document.querySelector(".container");
+
+    let localCounter = localStorage.getItem("counterLocal");
+    console.log(localCounter);
+    if(localCounter !== null) {
+        for (let i = 1; i <= localCounter; i++) {
+            console.log(i);
+            let saved = localStorage.getItem(`form_${i}`);
+            if (saved) {
+                formToSave.insertAdjacentHTML("beforeend", saved);
+            }
+        }
+    }
+
+
+
+
+
+    // document.querySelector("#title").innerHTML = localStorage.getItem("title");
+    //
+    // let textAreaElement = document.querySelector("textarea");
+    // let title = document.querySelector("h3");
+
+    // title.addEventListener("input", saveTitle);
+
+
+
+    // function saveTitle() {
+    //     let title = document.querySelector("#title").innerHTML;
+    //     console.log(title);
+    //     localStorage.setItem("title", title);
+    // }
+
 }
 
 main();
@@ -177,28 +240,5 @@ main();
 
 
 
-// document.querySelector("#msg").value = localStorage.getItem("msg");
-// document.querySelector("#title").innerHTML = localStorage.getItem("title");
-//
-//
-//
-//
-// let textAreaElement = document.querySelector("textarea");
-// let title = document.querySelector("h3");
-// console.log(title);
-//
-// textAreaElement.addEventListener("input", saveTextArea);
-// title.addEventListener("input", saveTitle);
-//
-// function saveTextArea() {
-//     let message = document.querySelector("#msg").value;
-//     console.log(message);
-//     localStorage.setItem("msg", message);
-// }
-//
-// function saveTitle() {
-//     let title = document.querySelector("#title").innerHTML;
-//     console.log(title);
-//     localStorage.setItem("title", title);
-// }
+
 
