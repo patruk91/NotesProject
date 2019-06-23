@@ -175,11 +175,15 @@ function handleLocalStorageData() {
             let saved = localStorage.getItem(`form_${i}`);
             if (saved) {
                 placeToSave.insertAdjacentHTML("beforeend", saved);
+
             }
         }
         let forms = document.querySelectorAll(".form-data");
+        let x = 1;
         for (let form of forms) {
+            form.id = `form_${x}`;
             form.querySelector("textarea").value = localStorage.getItem(`${form.id}_text`);
+            x++;
         }
     }
 
