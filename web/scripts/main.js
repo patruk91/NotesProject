@@ -109,6 +109,7 @@ function saveToLocal() {
     for (let i = 0; i < forms.length; i++) {
         let text = forms[i].querySelector("textarea").value;
         localStorage.setItem(`form_${i + 1}`, forms[i].outerHTML);
+        localStorage.setItem(`form_${i + 1}_text`, text);
     }
     localStorage.setItem("localCounter", `${forms.length}`);
 }
@@ -182,9 +183,15 @@ function handleLocalStorageData() {
                 placeToSave.insertAdjacentHTML("beforeend", saved);
             }
         }
-        saveToLocal();
         let forms = document.querySelectorAll(".form-data");
         for (let form of forms) {
+            console.log(localStorage.getItem(form.id +"_text"));
+            form.querySelector("textarea").value = localStorage.getItem(`${form.id}_text`);
+        }
+        saveToLocal();
+        console.log(localStorage.getItem(`form_1_text`));
+        for (let form of forms) {
+
             form.addEventListener("input", saveToLocal);
             form.addEventListener("dragend", saveToLocal);
             let noteToRemove = form.querySelector(`button`);
@@ -196,7 +203,6 @@ function handleLocalStorageData() {
     }
 
     function removeThatNote() {
-        console.log(this.parentElement.parentElement);
         localStorage.removeItem(this.parentElement.parentElement.id);
         this.parentElement.parentElement.remove();
         localStorage.clear();
