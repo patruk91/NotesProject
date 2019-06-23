@@ -97,7 +97,6 @@ function addListenerToDragElements() {
 }
 
 function addListenerToSaveDataInLocalStorage(event) {
-    console.log(event.currentTarget.counterData);
     let formToSave = document.querySelector(`#form_${event.target.counterData.getCounter()}`);
     formToSave.addEventListener("input", saveToLocal);
     formToSave.addEventListener("dragend", saveToLocal);
@@ -108,7 +107,7 @@ function addListenerToSaveDataInLocalStorage(event) {
 function saveToLocal() {
     let forms = document.querySelectorAll(".form-data");
     for (let i = 0; i < forms.length; i++) {
-        console.log(forms);
+        let text = forms[i].querySelector("textarea").value;
         localStorage.setItem(`form_${i + 1}`, forms[i].outerHTML);
     }
     localStorage.setItem("localCounter", `${forms.length}`);
@@ -119,8 +118,6 @@ function handleDragAndDropAtContainer(counterValue) {
     container.addEventListener("dragstart", dragStart);
     container.addEventListener("dragover", dragOver);
     container.addEventListener("drop", dragDrop);
-
-
 
     let xClickPositionAtNote;
     let yClickPositionAtNote;
@@ -138,9 +135,6 @@ function handleDragAndDropAtContainer(counterValue) {
     }
 
     function dragDrop(event) {
-
-
-
         let bounds = event.target.getBoundingClientRect();
         let xDragTarget = event.clientX - bounds.left;
         let yDragTarget = event.clientY - bounds.top;
@@ -160,7 +154,7 @@ function handleDragAndDropAtContainer(counterValue) {
 
 function countValue() {
     return {
-        counter: localStorage.getItem("counterLocal") ? localStorage.getItem("counterLocal") : 0,
+        counter: localStorage.getItem("localCounter") ? localStorage.getItem("localCounter") : 0,
         zIndex:0,
         increment: function () {
             this.counter++;
@@ -178,28 +172,40 @@ function countValue() {
 }
 
 
-
-function main() {
+function handleLocalStorageData() {
     let placeToSave = document.querySelector(".container");
     let localCounter = localStorage.getItem("localCounter");
-    if(localCounter !== null) {
+    if (localCounter !== null) {
         for (let i = 1; i <= localCounter; i++) {
             let saved = localStorage.getItem(`form_${i}`);
             if (saved) {
                 placeToSave.insertAdjacentHTML("beforeend", saved);
-
-
-
-
             }
         }
-        localStorage.clear();
         saveToLocal();
+        let forms = document.querySelectorAll(".form-data");
+        for (let form of forms) {
+            form.addEventListener("input", saveToLocal);
+            form.addEventListener("dragend", saveToLocal);
+            let noteToRemove = form.querySelector(`button`);
+            noteToRemove.addEventListener("click", removeThatNote);
+        }
 
-        // localStorage.setItem("localCounter", `${localCounter}`);
+        localStorage.setItem("localCounter", `${localCounter}`);
 
     }
 
+    function removeThatNote() {
+        console.log(this.parentElement.parentElement);
+        localStorage.removeItem(this.parentElement.parentElement.id);
+        this.parentElement.parentElement.remove();
+        localStorage.clear();
+        saveToLocal();
+    }
+}
+
+function main() {
+    handleLocalStorageData();
     const counterValue = countValue();
     editNotes(counterValue);
     handleDragAndDropAtContainer(counterValue);
