@@ -1,4 +1,5 @@
 # NotesProject
+## [MyNotesProject](https://patruk91.github.io/NotesProject/)
 
 Your task is to create an application for taking notes.
 
